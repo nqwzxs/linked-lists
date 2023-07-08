@@ -29,12 +29,10 @@ class LinkedList {
   }
 
   size() {
-    if (!this.head) return 0;
-
-    let total = 1;
+    let total = 0;
     let node = this.head;
 
-    while (node.nextNode) {
+    while (node) {
       total++;
       node = node.nextNode;
     }
@@ -51,7 +49,7 @@ class LinkedList {
   }
 
   at(index) {
-    const max = this.size()
+    const max = this.size();
     if (index >= max) return 'Invalid index!';
 
     let node = this.head;
@@ -64,11 +62,11 @@ class LinkedList {
   }
 
   pop() {
-    if (!this.head) return;
-
     if (this.head === this.tail) {
       this.head = null;
       this.tail = null;
+
+      return;
     }
       
     let node = this.head;
@@ -78,20 +76,46 @@ class LinkedList {
     }
 
     node.nextNode = null;
+    this.tail = node;
   }
 
-  contains(value) {
-    if (!this.head) return false;
-    
+  contains(value) {  
     let node = this.head;
 
-    while (node.nextNode) {
+    while (node) {
       if (node.value === value) return true;
 
       node = node.nextNode;
     }
 
     return false;
+  }
+
+  find(value) {
+    let index = 0;
+    let node = this.head;
+
+    while (node) {
+      if (node.value === value) return index;
+
+      node = node.nextNode;
+      index++;
+    }
+
+    return null;
+  }
+
+  toString() {
+    let string = '';
+
+    let node = this.head;
+
+    while (node) {
+      string += `${node.value} -> `;
+      node = node.nextNode;
+    }
+
+    return string + 'null';
   }
 }
 
@@ -103,19 +127,22 @@ class Node {
 const linkedList = new LinkedList();
 
 linkedList.append(727);
-linkedList.append(667);
+linkedList.prepend(667);
 linkedList.append('one');
+linkedList.append(1337);
+linkedList.append('john');
+linkedList.append(9);
+linkedList.append('nine');
 
-let size = linkedList.size();
-console.log(size);
-
-let node = linkedList.at(4);
-console.log(node);
+console.log(linkedList.size());
+console.log(linkedList.at(0));
 
 linkedList.pop();
 
-size = linkedList.size();
-console.log(size);
+console.log(linkedList.size());
+console.log(linkedList.at(0));
 
-let contains = linkedList.contains(727);
-console.log(contains);
+console.log(linkedList.contains(727));
+console.log(linkedList.find(667));
+
+console.log(linkedList.toString());
