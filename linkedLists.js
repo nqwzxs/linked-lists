@@ -29,11 +29,25 @@ class LinkedList {
   }
 
   size() {
+    if (!this.head) return 0;
 
+    let number = 1;
+    let node = this.head;
+
+    while (node.nextNode) {
+      number++;
+      node = node.nextNode;
+    }
+
+    return number;
   }
 
   head() {
+    return this.head;
+  }
 
+  tail() {
+    return this.tail;
   }
 }
 
@@ -43,3 +57,10 @@ class Node {
 }
 
 const linkedList = new LinkedList();
+
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+const size = linkedList.size();
+console.log(size);
