@@ -1,40 +1,30 @@
 class LinkedList {
   head = null
-  tail = null
 
   append(value) {
-    const node = new Node();
-    node.value = value;
+    const node = new Node(value);
 
-    if (!this.tail) {
+    if (!this.head) {
       this.head = node;
-      this.tail = node;
     } else {
-      this.tail.nextNode = node;
-      this.tail = node;
+      this.tail().nextNode = node;
     }
   }
 
   prepend(value) {
-    const node = new Node();
-    node.value = value;
+    const node = new Node(value);
 
-    if (!this.head) {
-      this.head = node;
-      this.tail = node;
-    } else {
-      node.nextNode = this.head;
-      this.head = node;
-    }
+    if (this.head) node.nextNode = this.head;
+    this.head = node;
   }
 
   size() {
     let total = 0;
-    let node = this.head;
+    let currentNode = this.head;
 
-    while (node) {
+    while (currentNode) {
       total++;
-      node = node.nextNode;
+      currentNode = currentNode.nextNode;
     }
 
     return total;
@@ -45,47 +35,44 @@ class LinkedList {
   }
 
   tail() {
-    return this.tail;
+    let currentNode = this.head;
+    while (currentNode.nextNode) currentNode = currentNode.nextNode;
+    return currentNode;
   }
 
   at(index) {
-    const max = this.size();
-    if (index >= max) return 'Invalid index!';
-
-    let node = this.head;
-
+    let currentNode = this.head;
+    
     for (let i = 0; i < index; i++) {
-      node = node.nextNode;
+      currentNode = currentNode.nextNode;
+      if (!currentNode) return 'Invalid index!';
     }
 
-    return node;
+    return currentNode;
   }
 
   pop() {
-    if (this.head === this.tail) {
-      this.head = null;
-      this.tail = null;
+    if (!this.head) return;
 
-      return;
-    }
-      
-    let node = this.head;
+    let currentNode = this.head;
+    let previousNode = null;
 
-    while (node.nextNode !== this.tail) {
-      node = node.nextNode;
+    while (currentNode.nextNode) {
+      previousNode = currentNode;
+      currentNode = currentNode.nextNode;
     }
 
-    node.nextNode = null;
-    this.tail = node;
+    if (!previousNode) this.head = null;
+    else previousNode.nextNode = null;
   }
 
   contains(value) {  
-    let node = this.head;
+    let currentNode = this.head;
 
-    while (node) {
-      if (node.value === value) return true;
+    while (currentNode) {
+      if (currentNode.value === value) return true;
 
-      node = node.nextNode;
+      currentNode = currentNode.nextNode;
     }
 
     return false;
@@ -93,12 +80,12 @@ class LinkedList {
 
   find(value) {
     let index = 0;
-    let node = this.head;
+    let currentNode = this.head;
 
-    while (node) {
-      if (node.value === value) return index;
+    while (currentNode) {
+      if (currentNode.value === value) return index;
 
-      node = node.nextNode;
+      currentNode = currentNode.nextNode;
       index++;
     }
 
@@ -108,41 +95,82 @@ class LinkedList {
   toString() {
     let string = '';
 
-    let node = this.head;
+    let currentNode = this.head;
 
-    while (node) {
-      string += `${node.value} -> `;
-      node = node.nextNode;
+    while (currentNode) {
+      string += `${currentNode.value} -> `;
+      currentNode = currentNode.nextNode;
     }
 
     return string + 'null';
   }
+
+  insertAt(value, index) {
+    if (!this.head || index === 0) this.prepend(value);
+    else {
+      const node = new Node(value);
+  
+      let currentNode = this.head;
+      let previousNode = null;
+  
+      for (let i = 0; i < index; i++) {
+        previousNode = currentNode;
+        currentNode = currentNode.nextNode;
+        if (!currentNode) break;
+      }
+  
+      previousNode.nextNode = node;
+      node.nextNode = currentNode;
+    }
+  }
+
+  removeAt(index) {
+    if (!this.head) return 'List is already empty!';
+    else {
+      let currentNode = this.head;
+      let previousNode = null;
+  
+      for (let i = 0; i < index; i++) {
+        previousNode = currentNode;
+        currentNode = currentNode.nextNode;
+        if (!currentNode) return 'Invalid index!';
+      }
+  
+      if (!previousNode) this.head = currentNode.nextNode;
+      else previousNode.nextNode = currentNode.nextNode;
+    }
+  }
 }
 
 class Node {
-  value = null
-  nextNode = null
+  constructor(value) {
+    this.value = value;
+    this.nextNode = null;
+  }
 }
 
 const linkedList = new LinkedList();
 
 linkedList.append(727);
 linkedList.prepend(667);
-linkedList.append('one');
 linkedList.append(1337);
-linkedList.append('john');
 linkedList.append(9);
-linkedList.append('nine');
 
 console.log(linkedList.size());
-console.log(linkedList.at(0));
+console.log(linkedList.toString());
 
 linkedList.pop();
 
 console.log(linkedList.size());
-console.log(linkedList.at(0));
+console.log(linkedList.toString());
 
 console.log(linkedList.contains(727));
 console.log(linkedList.find(667));
+
+linkedList.insertAt('inserted', 0);
+
+console.log(linkedList.toString());
+
+linkedList.removeAt(0);
 
 console.log(linkedList.toString());
